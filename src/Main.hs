@@ -24,7 +24,7 @@ names = [ "Aurata setuniata",
 dataCheck::[(String,[(String)])]->[String]->Bool
 dataCheck datum nominibus = not (a && b)
      where a = (length $ nub (map (\(_,e)-> length e) datum)) == 1
-           b = (length names) == length (snd $ head datum)
+           b = (length nominibus) == length (snd $ head datum)
 
 dataOrder::(String, [String])->(String, [String])->Ordering
 dataOrder (_,a) (_, b) = if (n>m)
@@ -40,7 +40,7 @@ quest [] = print "Not found, sry"
 quest (q:qs) = do
      print $ fst q
      x <- getLine
-     let check = foldl' (||) False $ map (\e-> (snd e) `elem` [x,"-"]) $ snd q
+     let check = (foldl' (||) False $ map (\e-> (snd e) `elem` [x,"-"]) $ snd q) || x == "-" 
      if(check) 
           then do
                let res = map fst $ filter (\e -> (snd e) `elem` [x,"-"]) $ snd q

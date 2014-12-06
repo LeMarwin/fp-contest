@@ -40,7 +40,7 @@ quest [] = print "Not found, sry"
 quest (q:qs) = do
      print $ fst q
      x <- getLine
-     let check = foldl' (||) False $ map (\e-> (snd e) `elem` [x,"-"]) $ snd q
+     let check = (foldl' (||) False $ map (\e-> (snd e) `elem` [x,"-"]) $ snd q) || x == "-" 
      if(check) 
           then do
                let res = map fst $ filter (\e -> (snd e) `elem` [x,"-"]) $ snd q
