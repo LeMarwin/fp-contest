@@ -38,15 +38,19 @@ dataOrder (_,a) (_, b) = if (n>m)
 quest::[(String, [(Int,String)])]->IO()
 quest [] = print "Not found, sry"
 quest (q:qs) = do
-     print $ fst q
+     print q
      x <- getLine
-     let check = (foldl' (||) False $ map (\e-> (snd e) `elem` [x,"-"]) $ snd q) || x == "-" 
-     if(check) 
+     if(x/="-")
           then do
-               let res = map fst $ filter (\e -> (snd e) `elem` [x,"-"]) $ snd q
-               if (length res == 1) then print $ names!!(head res)
-                    else quest $ leaveOnly res qs
-          else print "No such answer, sry"
+               let check = foldl' (||) False $ map (\e-> (snd e) `elem` [x,"-"]) $ snd q
+               if(check) 
+                    then do
+                         let res = map fst $ filter (\e -> (snd e) `elem` [x,"-"]) $ snd q
+                         print res
+                         if (length res == 1) then print $ names!!(head res)
+                              else quest $ leaveOnly res qs
+                    else print "No such answer, sry"
+          else quest qs
 
 leaveOnly::[Int]->[(String, [(Int,String)])]->[(String, [(Int,String)])]
 leaveOnly nums mas = map (\(a,b)-> (a, filter(\(i,_)-> i `elem` nums) b)) mas
@@ -54,4 +58,8 @@ leaveOnly nums mas = map (\(a,b)-> (a, filter(\(i,_)-> i `elem` nums) b)) mas
 main::IO()
 main = if(dataCheck inputMatrix names)
           then print $ "Not enough data/names. Check inputs" ++ show (dataCheck inputMatrix names)
-          else quest $ map (\(s,m)->(s, zip [0..(length m)] m)) $ sortBy (dataOrder) inputMatrix
+          else do 
+               let x = "-"
+               let q = map (\(s,m)->(s, zip [0..(length m)] m)) $ sortBy (dataOrder) inputMatrix
+               print $ (foldl' (||) False $ map (\e-> (snd e) `elem` [x,"-"]) $ snd (q!!1)) || x == "-" 
+               quest $ map (\(s,m)->(s, zip [0..(length m)] m)) $ sortBy (dataOrder) inputMatrix
